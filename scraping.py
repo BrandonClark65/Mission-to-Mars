@@ -106,16 +106,30 @@ def hemisphere_images(browser):
     img_soup = soup(html,'html.parser')
 
     for i in range(1,5):
+        # empty hemispheres dictionary
         hemispheres = {}
+        # path to image to click
         x_path = '//*[@id="product-section"]/div[2]/div[' + str(i) + ']/a/img'
-        browser.find_by_xpath(x_path).click()
-        img_url = browser.find_by_xpath('//*[@id="wide-image"]/div/ul/li[1]/a')['href']
-        img_title = browser.find_by_xpath('//*[@id="results"]/div[1]/div/div[3]/h2').text
-        hemispheres['img_url'] = img_url
-        hemispheres['title'] = img_title
-        hemisphere_image_urls.append(hemispheres)
         
-        browser.back()
+        try:
+            # click thumbnail image
+            browser.find_by_xpath(x_path).click()
+            # get url for full sized image
+            img_url = browser.find_by_xpath('//*[@id="wide-image"]/div/ul/li[1]/a')['href']
+            # get title of image
+            img_title = browser.find_by_xpath('//*[@id="results"]/div[1]/div/div[3]/h2').text
+            # Add to hemispheres dictionary
+            hemispheres['img_url'] = img_url
+            hemispheres['title'] = img_title
+            # add dictionaries to list
+            hemisphere_image_urls.append(hemispheres)
+            # go back page
+            browser.back()
+        
+        except AttributeError:
+            return None 
+
+    return hemisphere_image_urls
 
 if __name__ == "__main__":
     # If running as script, print scraped data
