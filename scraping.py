@@ -19,7 +19,7 @@ def scrape_all():
         "featured_image": featured_image(browser),
         "facts": mars_facts(),
         "last_modified": dt.datetime.now(),
-        "Hemisphere Images": hemisphere_images() 
+        "hemispheres": hemisphere_images(browser) 
     }
 
     # Stop webdriver and return data
@@ -85,7 +85,8 @@ def mars_facts():
         # Use 'read_html' to scrape the facts table into a dataframe
         df = pd.read_html('https://galaxyfacts-mars.com')[0]
 
-    except BaseException:
+    except BaseException as e:
+        print(f"Error: {e}")
         return None
 
     # Assign columns and set index of dataframe
@@ -93,6 +94,7 @@ def mars_facts():
     df.set_index('Description', inplace=True)
 
     # Convert dataframe into HTML format, add bootstrap
+    print(df.to_html(classes="table table-striped"))
     return df.to_html(classes="table table-striped")
 
 def hemisphere_images(browser):
